@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_chat import message
-from question_generator import generate_qn
+import question_gen
+
 
 st.set_page_config(
     page_title="Teach2U",
@@ -16,16 +17,16 @@ if "answers" not in st.session_state:
     st.session_state["answers"] = []
 
 if "context" not in st.session_state:
-    st.session_state["context"] = ""
-
-
-def question_generator():
-    st.write(st.session_state["context"])
+    st.session_state["context"] = None
 
 
 with st.sidebar:
     st.title("Teach2U")
-    st.session_state["context"] = st.file_uploader("Upload your teaching materials", type=["pdf", "txt"], on_change=question_generator)
+    st.session_state["context"] = st.file_uploader("Upload your teaching materials", type=["pdf", "txt"])
+    if st.session_state['context']:
+        with open(st.session_state['context'].name, 'wb') as f:
+            f.write(st.session_state['context'].getbuffer())
+        st.session_state["questions"] = question_gen.generate_qn(st.session_state['context'].name)
     st.write("---")
     st.button("Export")
     st.button("Reset")
@@ -57,7 +58,7 @@ with input_container:
 with response_container:
     message("Hey there! I'm Teach2U, a teachable assistant. I will ask questions related to your content to help you review and reflect upon your learnings.")
     message("What subject would you like to teach me today?")
-    for i in range(len(st.session_state["questions"])):
+    for i in range(len(st.session_state["answers"])):
         message(
             st.session_state["answers"][i],
             is_user=True,
