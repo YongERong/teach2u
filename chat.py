@@ -2,7 +2,6 @@ import streamlit as st
 from streamlit_chat import message
 import question_gen
 
-
 st.set_page_config(
     page_title="Teach2U",
     page_icon="🎓",
@@ -22,14 +21,17 @@ if "context" not in st.session_state:
 
 with st.sidebar:
     st.title("Teach2U")
-    st.session_state["context"] = st.file_uploader("Upload your teaching materials", type=["pdf", "txt"])
-    if st.session_state['context']:
-        with open(st.session_state['context'].name, 'wb') as f:
-            f.write(st.session_state['context'].getbuffer())
-        st.session_state["questions"] = question_gen.generate_qn(st.session_state['context'].name)
+    st.session_state["context"] = st.file_uploader(
+        "Upload your teaching materials", type=["pdf", "txt"]
+    )
+    if st.session_state["context"]:
+        with open(st.session_state["context"].name, "wb") as f:
+            f.write(st.session_state["context"].getbuffer())
+        st.session_state["questions"] = question_gen.generate_qn(
+            st.session_state["context"].name
+        )
     st.write("---")
-    st.button("Export")
-    st.button("Reset")
+    st.button("Reset", on_click=lambda: st.session_state.clear())
 
 
 response_container = st.container()
@@ -39,11 +41,6 @@ input_container = st.container()
 def submit():
     st.session_state["answers"].append(st.session_state["input"])
     st.session_state["input"] = ""
-
-    # Temporary Response
-    st.session_state["questions"].append(
-        "What is the difference between a list and a tuple?"
-    )
 
 
 with input_container:
@@ -56,7 +53,9 @@ with input_container:
     )
 
 with response_container:
-    message("Hey there! I'm Teach2U, a teachable assistant. I will ask questions related to your content to help you review and reflect upon your learnings.")
+    message(
+        "Hey there! I'm Teach2U, a teachable assistant. I will ask questions related to your content to help you review and reflect upon your learnings."
+    )
     message("What subject would you like to teach me today?")
     for i in range(len(st.session_state["answers"])):
         message(
