@@ -44,12 +44,15 @@ def submit():
 
 
 with input_container:
+    if not st.session_state["context"]:
+        st.info("Upload your teaching materials to begin.")
     input = st.text_input(
         label="Input your answers",
         value="",
         key="input",
         label_visibility="collapsed",
         on_change=submit,
+        disabled=not bool(st.session_state["context"]),
     )
 
 with response_container:
