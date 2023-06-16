@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_chat import message
-import question_gen
+import question_generator
+import context_extraction
 
 st.set_page_config(
     page_title="Teach2U",
@@ -27,9 +28,8 @@ with st.sidebar:
     if st.session_state["context"]:
         with open(st.session_state["context"].name, "wb") as f:
             f.write(st.session_state["context"].getbuffer())
-        st.session_state["questions"] = question_gen.generate_qn(
-            st.session_state["context"].name
-        )
+        context = context_extraction.process_input(st.session_state["context"].name)
+        st.session_state["questions"] = question_generator.generate_qn(context)
     st.write("---")
     st.button("Reset", on_click=lambda: st.session_state.clear())
 

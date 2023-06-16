@@ -2,6 +2,9 @@ streamlit==1.22.0
 streamlit-chat==0.0.2.2
 transformers==4.29.2
 langchain==0.0.184
-textract==1.6.5
 torch==2.0.1
 sentencepiece==0.1.99
+unstructured==0.7.5
+pdfminer.six==20221105
+cryptography==41.0.1
+sentence-transformers==2.2.2
