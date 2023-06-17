@@ -19,6 +19,13 @@ if "answers" not in st.session_state:
 if "context" not in st.session_state:
     st.session_state["context"] = None
 
+@st.cache_data
+def get_questions():
+        with open(st.session_state["context"].name, "wb") as f:
+            f.write(st.session_state["context"].getbuffer())
+        context = context_extraction.process_input(st.session_state["context"].name)
+        return question_generator.generate_qn(context)
+
 
 with st.sidebar:
     st.title("Teach2U")
@@ -26,10 +33,7 @@ with st.sidebar:
         "Upload your teaching materials", type=["pdf", "txt"]
     )
     if st.session_state["context"]:
-        with open(st.session_state["context"].name, "wb") as f:
-            f.write(st.session_state["context"].getbuffer())
-        context = context_extraction.process_input(st.session_state["context"].name)
-        st.session_state["questions"] = question_generator.generate_qn(context)
+        st.session_state["questions"] = get_questions()
     st.write("---")
     st.button("Reset", on_click=lambda: st.session_state.clear())
 
