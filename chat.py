@@ -22,13 +22,13 @@ if "answers" not in st.session_state:
 if "context" not in st.session_state:
     st.session_state["context"] = None
 
-@st.cache_data
+@st.cache_data(max_entries=5)
 def get_questions(session_id):
         with open(st.session_state["context"].name, "wb") as f:
             f.write(st.session_state["context"].getbuffer())
         context = context_extraction.process_input(st.session_state["context"].name)
-        return question_generator.generate_qn(context)
-
+        q_chain = question_generator.question_chain()
+        return question_generator.generate_qn(q_chain, context)
 
 with st.sidebar:
     st.title("Teach2U")
