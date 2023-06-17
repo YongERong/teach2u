@@ -2,6 +2,9 @@ import streamlit as st
 from streamlit_chat import message
 import question_generator
 import context_extraction
+from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
+
+session_id = get_script_run_ctx().session_id
 
 st.set_page_config(
     page_title="Teach2U",
@@ -20,7 +23,7 @@ if "context" not in st.session_state:
     st.session_state["context"] = None
 
 @st.cache_data
-def get_questions():
+def get_questions(session_id):
         with open(st.session_state["context"].name, "wb") as f:
             f.write(st.session_state["context"].getbuffer())
         context = context_extraction.process_input(st.session_state["context"].name)
@@ -33,7 +36,7 @@ with st.sidebar:
         "Upload your teaching materials", type=["pdf", "txt"]
     )
     if st.session_state["context"]:
-        st.session_state["questions"] = get_questions()
+        st.session_state["questions"] = get_questions(session_id)
     st.write("---")
     st.button("Reset", on_click=lambda: st.session_state.clear())
 
