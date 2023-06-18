@@ -26,5 +26,5 @@ def generate_qn(q_chain, context_list):
         questions.append(q_chain.run(context).split("<sep>"))
 
     questions_flattened = [q for q_list in questions for q in q_list if q]
-    # remove duplicates next
-    return questions_flattened
+    # remove duplicates based on similarity in future
+    return list(set(questions_flattened))
