@@ -42,6 +42,11 @@ def reset():
     st.session_state["session_id"] = new_session_id
     st.session_state["file_uploader_key"] = new_uploader_key
 
+def export_csv(questions, answers):
+    if questions and answers:
+        return "\n".join([f"{q}, {a}" for (q, a) in zip(questions, answers)])
+    else:
+        return ""
 
 with st.sidebar:
     st.title("Teach2U")
@@ -54,6 +59,13 @@ with st.sidebar:
         st.session_state["questions"] = get_questions(st.session_state["session_id"])
     st.write("---")
     st.button("Reset", on_click=reset)
+    st.download_button(
+        label="Export",
+        data=export_csv(st.session_state["questions"], st.session_state["answers"][1:]),
+        file_name="export.csv",
+        help="Export conversation as csv file",
+        mime="text/csv"
+    )
 
 
 response_container = st.container()
